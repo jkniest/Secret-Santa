@@ -6,6 +6,16 @@ use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Illuminate\Console\Command;
 
+/**
+ * This artisan command starts and runs the discord bot. It should be executed
+ * as a background task / daemon.
+ *
+ * @category Core
+ * @package  SecretSanta
+ * @author   Jordan Kniest <contact@jkniest.de>
+ * @license  MIT <opensource.org/licenses/MIT>
+ * @link     https://jkniest.de
+ */
 class RunCommand extends Command
 {
     /**
@@ -25,7 +35,7 @@ class RunCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {

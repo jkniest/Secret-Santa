@@ -2,9 +2,17 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+/**
+ * The default laravel exception handler.
+ *
+ * @category Core
+ * @package  SecretSanta
+ * @author   Jordan Kniest <contact@jkniest.de>
+ * @license  MIT <opensource.org/licenses/MIT>
+ * @link     https://jkniest.de
+ */
 class Handler extends ExceptionHandler
 {
     /**
