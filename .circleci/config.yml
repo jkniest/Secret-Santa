@@ -1,0 +1,53 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: /var/www
+
+    environment:
+      BASH_ENV: ~/.bashrc
+
+    docker:
+      - image: php:7.1-cli
+        environment:
+          APP_ENV=testing
+
+    steps:
+      - run:
+          name: Install System Dependencies
+          command: |
+            apt-get update
+            apt-get install -y git unzip sudo zlib1g-dev
+
+      - run:
+          name: Install PHP Extensions
+          command: docker-php-ext-install -j$(nproc) mcrypt pdo_sqlite gd zip
+
+      - checkout
+
+      - run:
+          name: Install Composer
+          command: |
+            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('https://composer.github.io/installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer invalid'; unlink('composer-setup.php'); } echo PHP_EOL;"
+            php composer-setup.php
+            php -r "unlink('composer-setup.php');"
+            mv composer.phar /usr/local/bin/composer
+
+      - run:
+          name: Install Composer Dependencies
+          command: composer install --no-progress --no-suggest
+
+      - run:
+          name: PHPCS
+          command: ./vendor/bin/phpcs app/
+
+      - run:
+          name: Setup Environment
+          command: |
+            cp .env.example .env
+            php artisan key:generate
+
+      - run:
+          name: Unit Tests
+          command: ./vendor/bin/phpunit
