@@ -17,7 +17,7 @@ jobs:
           name: Install System Dependencies
           command: |
             apt-get update
-            apt-get install -y git unzip sudo zlib1g-dev libmcrypt-dev libpng-dev
+            apt-get install -y git unzip sudo zlib1g-dev libmcrypt-dev libpng-dev libsqlite3-dev
 
       - run:
           name: Install PHP Extensions
