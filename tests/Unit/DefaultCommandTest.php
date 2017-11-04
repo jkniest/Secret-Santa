@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Discord\Commands\DefaultCommand;
 use App\Models\Participant;
+use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Fakes\FakeMessage;
 use Tests\TestCase;
@@ -11,6 +12,13 @@ use Tests\TestCase;
 class DefaultCommandTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        State::set('bot', State::STARTED);
+    }
 
     /** @test */
     public function it_can_add_a_new_user_into_the_game()
@@ -76,6 +84,27 @@ class DefaultCommandTest extends TestCase
 
         // Also: The bot should reply
         $this->assertEquals('du bist nun für das Wichtelspiel ausgetragen. Schade :(', $message->replyText);
+    }
+
+    /** @test */
+    public function the_command_is_only_executed_if_the_state_is_started()
+    {
+        // Given: The state is set to 'STOPPED'
+        State::set('bot', State::STOPPED);
+
+        // Given: The command with a fake message
+        $message = new FakeMessage();
+        $command = new DefaultCommand($message);
+
+        // When: We execute the command
+        $command->handle();
+
+        // Then: The participants table should still be empty
+        $this->assertCount(0, Participant::all());
+
+        // And: No reply or DM should have been send
+        $this->assertEmpty($message->replyText);
+        $this->assertEmpty($message->dmText);
     }
 }
 

@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  */
 class State extends Model
 {
-    const STARTED = 1;
+    const STOPPED = 1;
+
+    const STARTED = 2;
 
     /**
      * The attributes that aren't mass assignable.

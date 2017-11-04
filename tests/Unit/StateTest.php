@@ -11,11 +11,11 @@ class StateTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function it_has_the_default_state_started()
+    public function it_has_the_default_state_stopped()
     {
         $state = State::whereName('bot')->first()->value;
 
-        $this->assertEquals(State::STARTED, $state);
+        $this->assertEquals(State::STOPPED, $state);
     }
 
     /** @test */

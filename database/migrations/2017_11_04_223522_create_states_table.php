@@ -23,7 +23,7 @@ class CreateStatesTable extends Migration
 
         State::create([
             'name'  => 'bot',
-            'value' => State::STARTED
+            'value' => State::STOPPED
         ]);
     }
 
