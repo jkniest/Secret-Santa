@@ -79,4 +79,14 @@ class DiscordMessage implements MessageHandler
     {
         return new DiscordUser($this->original->author->user);
     }
+
+    /**
+     * Get the content of the message.
+     *
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->original->content;
+    }
 }
