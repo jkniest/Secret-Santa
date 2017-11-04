@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Discord\DefaultCommand;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
 use Illuminate\Console\Command;
@@ -48,7 +49,7 @@ class RunCommand extends Command
             // Handle messages and commands
             $discord->on('message', function (Message $message) {
                 if ($message->content === '!santa') {
-                    $message->reply('Hi');
+                    (new DefaultCommand($message))->handle();
                 }
             });
 
