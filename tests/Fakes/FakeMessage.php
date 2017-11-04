@@ -2,18 +2,10 @@
 
 namespace Tests\Fakes;
 
-class FakeMessage
+use App\Discord\MessageHandler;
+
+class FakeMessage implements MessageHandler
 {
-    /**
-     * @var FakeUser
-     */
-    public $author;
-
-    /**
-     * @var FakeChannel
-     */
-    public $channel;
-
     /**
      * @var bool
      */
@@ -24,14 +16,34 @@ class FakeMessage
      */
     public $replyText = '';
 
-    public function __construct()
+    /**
+     * @var string
+     */
+    public $dmText = '';
+
+    public function delete()
     {
-        $this->author = new FakeUser();
-        $this->channel = new FakeChannel();
+        $this->isDeleted = true;
+
+        return $this;
     }
 
-    public function reply(string $text)
+    public function reply(string $message)
     {
-        $this->replyText = $text;
+        $this->replyText = $message;
+
+        return $this;
+    }
+
+    public function sendDm(string $message)
+    {
+        $this->dmText = $message;
+
+        return $this;
+    }
+
+    public function getAuthor()
+    {
+        return new FakeUser();
     }
 }

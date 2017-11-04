@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\Discord\DefaultCommand;
+use App\Discord\Commands\DefaultCommand;
 use App\Models\Participant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Fakes\FakeMessage;
@@ -50,7 +50,7 @@ class DefaultCommandTest extends TestCase
             '',
             'Alles gute,',
             'Secret Santa'
-        ]), $message->author->messageText);
+        ]), $message->dmText);
     }
 }
 

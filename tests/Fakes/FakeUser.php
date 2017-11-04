@@ -2,35 +2,17 @@
 
 namespace Tests\Fakes;
 
-class FakeUser
+use App\Discord\User;
+
+class FakeUser implements User
 {
-    /**
-     * @var string
-     */
-    public $id = '123456789';
-
-    /**
-     * @var string
-     */
-    public $username = 'random123';
-
-    /**
-     * @var string
-     */
-    public $messageText = '';
-
-    /**
-     * @var FakeUser
-     */
-    public $user;
-
-    public function __construct()
+    public function getId()
     {
-        $this->user = $this;
+        return '123456789';
     }
 
-    public function sendMessage(string $message)
+    public function getUsername()
     {
-        $this->messageText = $message;
+        return 'random123';
     }
 }
