@@ -5,6 +5,7 @@ namespace App\Discord\Commands;
 use App\Discord\MessageHandler;
 use App\Models\Participant;
 use App\Stub;
+use Illuminate\Support\Collection;
 
 /**
  * List all participants.
@@ -45,19 +46,43 @@ class ListCommand
     {
         $this->message->delete();
 
-        $participants = Participant::select('discord_user_id')
+        $participants = $this->getParticipants();
+
+        $this->message->reply($this->getMessage($participants));
+    }
+
+    /**
+     * Load all participants from the database and transform them into a simple string
+     * array with all their id's.
+     *
+     * @return Collection
+     */
+    protected function getParticipants()
+    {
+        return Participant::select('discord_user_id')
             ->get()
             ->pluck('discord_user_id')
             ->map(function ($id) {
                 return "- <@{$id}>";
             });
+    }
 
+    /**
+     * Get the message which should be send as a reply to the user. If no participants
+     * exists, a generic message will be send. Otherwise a list of all participants.
+     *
+     * @param Collection $participants All participants of the game
+     *
+     * @return string
+     */
+    protected function getMessage(Collection $participants)
+    {
         if ($participants->count() === 0) {
-            $this->message->reply('Leider nehmen noch keine Personen an dem Spiel teil.');
-        } else {
-            $this->message->reply(Stub::load('list.message', [
-                'participants' => $participants->implode("\n")
-            ]));
+            return 'Leider nehmen noch keine Personen an dem Spiel teil.';
         }
+
+        return Stub::load('list.message', [
+            'participants' => $participants->implode("\n")
+        ]);
     }
 }
