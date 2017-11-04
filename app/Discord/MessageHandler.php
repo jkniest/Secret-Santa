@@ -45,4 +45,11 @@ interface MessageHandler
      * @return User
      */
     public function getAuthor();
+
+    /**
+     * Get the content of the message.
+     *
+     * @return string
+     */
+    public function getContent();
 }

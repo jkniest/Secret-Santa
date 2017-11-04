@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Discord\Commands\CommandHandler;
 use App\Discord\Commands\DefaultCommand;
 use App\Discord\DiscordMessage;
 use Discord\Discord;
@@ -35,6 +36,23 @@ class RunCommand extends Command
     protected $description = 'Start and run the discord bot';
 
     /**
+     * @var CommandHandler
+     */
+    private $commandHandler;
+
+    /**
+     * RunCommand constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->commandHandler = new CommandHandler('!santa', [
+            '' => DefaultCommand::class
+        ]);
+    }
+
+    /**
      * Execute the console command.
      *
      * @return void
@@ -46,11 +64,8 @@ class RunCommand extends Command
         ]);
 
         $bot->on('ready', function (Discord $discord) {
-            // Handle messages and commands
             $discord->on('message', function (Message $message) {
-                if ($message->content === '!santa') {
-                    (new DefaultCommand(new DiscordMessage($message)))->handle();
-                }
+                $this->commandHandler->handle(new DiscordMessage($message));
             });
         });
 

@@ -21,6 +21,16 @@ class FakeMessage implements MessageHandler
      */
     public $dmText = '';
 
+    /**
+     * @var string
+     */
+    private $content;
+
+    public function __construct(string $content = '')
+    {
+        $this->content = $content;
+    }
+
     public function delete()
     {
         $this->isDeleted = true;
@@ -45,5 +55,10 @@ class FakeMessage implements MessageHandler
     public function getAuthor()
     {
         return new FakeUser();
+    }
+
+    public function getContent()
+    {
+        return $this->content;
     }
 }
