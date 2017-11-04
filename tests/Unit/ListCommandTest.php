@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Discord\Commands\ListCommand;
 use App\Models\Participant;
+use App\Models\State;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Fakes\FakeMessage;
 use Tests\TestCase;
@@ -11,6 +12,13 @@ use Tests\TestCase;
 class ListCommandTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        State::set('bot', State::STARTED);
+    }
 
     /** @test */
     public function it_can_list_all_participants()
@@ -56,4 +64,56 @@ class ListCommandTest extends TestCase
         // And: A generic reply should be send
         $this->assertEquals('Leider nehmen noch keine Personen an dem Spiel teil.', $message->replyText);
     }
+
+    /** @test */
+    public function the_command_is_not_executed_if_the_state_is_stopped()
+    {
+        // Given: The state is STOPPED
+        State::set('bot', State::STOPPED);
+
+        // Given: The command with a fake message
+        $message = new FakeMessage();
+        $command = new ListCommand($message);
+
+        // When: We run the command
+        $command->handle();
+
+        // Then: No reply should have been send
+        $this->assertEmpty($message->replyText);
+    }
+
+    /** @test */
+    public function the_command_is_not_executed_if_the_state_is_drawing()
+    {
+        // Given: The state is DRAWING
+        State::set('bot', State::DRAWING);
+
+        // Given: The command with a fake message
+        $message = new FakeMessage();
+        $command = new ListCommand($message);
+
+        // When: We run the command
+        $command->handle();
+
+        // Then: The reply should have been send
+        $this->assertNotEmpty($message->replyText);
+    }
+
+    /** @test */
+    public function the_command_is_not_executed_if_the_state_is_idle()
+    {
+        // Given: The state is IDLE
+        State::set('bot', State::IDLE);
+
+        // Given: The command with a fake message
+        $message = new FakeMessage();
+        $command = new ListCommand($message);
+
+        // When: We run the command
+        $command->handle();
+
+        // Then: The reply should not have been send
+        $this->assertEmpty($message->replyText);
+    }
+
 }

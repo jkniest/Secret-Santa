@@ -20,6 +20,10 @@ class State extends Model
 
     const STARTED = 2;
 
+    const DRAWING = 3;
+
+    const IDLE = 4;
+
     /**
      * The attributes that aren't mass assignable.
      *
