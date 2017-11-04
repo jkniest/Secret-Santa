@@ -13,7 +13,7 @@ class DefaultCommandTest extends TestCase
     use RefreshDatabase;
 
     /** @test */
-    public function a_user_can_participate_in_the_game()
+    public function it_can_add_a_new_user_into_the_game()
     {
         // Given: A command with a fake message
         $message = new FakeMessage();
@@ -51,6 +51,31 @@ class DefaultCommandTest extends TestCase
             'Alles gute,',
             'Secret Santa'
         ]), $message->dmText);
+    }
+
+    /** @test */
+    public function it_can_remove_a_user_from_the_game_if_already_existant()
+    {
+        // Given: There is a participant, with the id '123456789'
+        $this->create(Participant::class, ['discord_user_id' => '123456789']);
+
+        // Given: A fake message
+        $message = new FakeMessage();
+
+        // Given: The default command with the fake message
+        $command = new DefaultCommand($message);
+
+        // When: We execute the command
+        $command->handle();
+
+        // Then: The user should have been removed from the participant list
+        $this->assertCount(0, Participant::all());
+
+        // And: The source message should have been deleted
+        $this->assertTrue($message->isDeleted);
+
+        // Also: The bot should reply
+        $this->assertEquals('du bist nun für das Wichtelspiel ausgetragen. Schade :(', $message->replyText);
     }
 }
 

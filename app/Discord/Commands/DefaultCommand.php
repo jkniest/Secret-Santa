@@ -44,14 +44,22 @@ class DefaultCommand
      */
     public function handle()
     {
-        Participant::create([
-            'discord_user_id' => $this->message->getAuthor()->getId()
-        ]);
+        $id = $this->message->getAuthor()->getId();
+        if (Participant::where('discord_user_id', $id)->count() === 0) {
+            Participant::create([
+                'discord_user_id' => $id
+            ]);
 
-        $this->message->delete()
-            ->reply('du bist nun für das Wichtelspiel eingetragen.')
-            ->sendDm(Stub::load('welcome.message', [
-                'username' => $this->message->getAuthor()->getUsername()
-            ]));
+            $this->message->delete()
+                ->reply('du bist nun für das Wichtelspiel eingetragen.')
+                ->sendDm(Stub::load('welcome.message', [
+                    'username' => $this->message->getAuthor()->getUsername()
+                ]));
+        } else {
+            Participant::where('discord_user_id', $id)->delete();
+
+            $this->message->delete()
+                ->reply('du bist nun für das Wichtelspiel ausgetragen. Schade :(');
+        }
     }
 }
