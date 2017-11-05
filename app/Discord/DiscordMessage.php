@@ -89,4 +89,35 @@ class DiscordMessage implements MessageHandler
     {
         return $this->original->content;
     }
+
+    /**
+     * Get the id of the message.
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->original->id;
+    }
+
+    /**
+     * Post a static reply to the channel of the message. The difference between
+     * 'reply' and 'staticReply' is, that staticReply does not mention the author
+     * of the message.
+     *
+     * @param string        $message  The message which should be send
+     * @param callable|null $callable A optional callable that will receive the sent message
+     *
+     * @return $this
+     */
+    public function staticReply(string $message, callable $callable = null)
+    {
+        $this->original->channel->sendMessage($message)->then(function ($message) use ($callable) {
+            if ($callable) {
+                $callable(new DiscordMessage($message));
+            }
+        });
+
+        return $this;
+    }
 }

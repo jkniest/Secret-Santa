@@ -4,6 +4,7 @@ namespace App\Discord\Commands;
 
 use App\Discord\MessageHandler;
 use App\Models\Participant;
+use App\Models\State;
 use App\Stub;
 
 /**
@@ -34,7 +35,7 @@ class DefaultCommand
     }
 
     /**
-     * Execute the command.
+     * Execute the command. If the bot is not started yet, don't do anything.
      *
      * 1.) Delete the command message
      * 2.) Check if the user alreay, participates in the game
@@ -45,6 +46,10 @@ class DefaultCommand
      */
     public function handle()
     {
+        if (State::byName('bot') != State::STARTED) {
+            return;
+        }
+
         $id = $this->message->getAuthor()->getId();
         $participant = Participant::where('discord_user_id', $id)->first();
 

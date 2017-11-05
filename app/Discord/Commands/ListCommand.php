@@ -4,6 +4,7 @@ namespace App\Discord\Commands;
 
 use App\Discord\MessageHandler;
 use App\Models\Participant;
+use App\Models\State;
 use App\Stub;
 use Illuminate\Support\Collection;
 
@@ -44,6 +45,11 @@ class ListCommand
      */
     public function handle()
     {
+        $state = State::byName('bot');
+        if ($state != State::DRAWING && $state != State::STARTED) {
+            return;
+        }
+
         $this->message->delete();
 
         $participants = $this->getParticipants();

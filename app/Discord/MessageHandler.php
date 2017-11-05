@@ -31,6 +31,18 @@ interface MessageHandler
     public function reply(string $message);
 
     /**
+     * Post a static reply to the channel of the message. The difference between
+     * 'reply' and 'staticReply' is, that staticReply does not mention the author
+     * of the message.
+     *
+     * @param string        $message  The message which should be send
+     * @param callable|null $callable A optional callable that will receive the sent message
+     *
+     * @return $this
+     */
+    public function staticReply(string $message, callable $callable = null);
+
+    /**
      * Send a DM to the author of the message.
      *
      * @param string $message The message which should be send.
@@ -52,4 +64,11 @@ interface MessageHandler
      * @return string
      */
     public function getContent();
+
+    /**
+     * Get the id of the message.
+     *
+     * @return string
+     */
+    public function getId();
 }
