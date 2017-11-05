@@ -44,6 +44,10 @@ class StartCommand
      */
     public function handle()
     {
+        if (State::byName('bot') != State::STOPPED) {
+            return;
+        }
+
         State::set('bot', State::STARTED);
 
         $this->message->delete();

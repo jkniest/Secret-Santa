@@ -35,5 +35,54 @@ class StartCommandTest extends TestCase
         $this->assertEquals('1234', State::byName('announcement_id'));
     }
 
-    // TODO: Only executed if state is stopped
+    /** @test */
+    public function it_will_not_run_if_the_state_is_started()
+    {
+        // Given: The state is STARTED
+        State::set('bot', State::STARTED);
+
+        // Given: A command with a fake message
+        $message = new FakeMessage();
+        $command = new StartCommand($message);
+
+        // When: We execute the command
+        $command->handle();
+
+        // Then: No static reply should have been posted
+        $this->assertEmpty($message->staticReplyText);
+    }
+
+    /** @test */
+    public function it_will_not_run_if_the_state_is_drawing()
+    {
+        // Given: The state is DRAWING
+        State::set('bot', State::DRAWING);
+
+        // Given: A command with a fake message
+        $message = new FakeMessage();
+        $command = new StartCommand($message);
+
+        // When: We execute the command
+        $command->handle();
+
+        // Then: No static reply should have been posted
+        $this->assertEmpty($message->staticReplyText);
+    }
+
+    /** @test */
+    public function it_will_not_run_if_the_state_is_idle()
+    {
+        // Given: The state is IDLE
+        State::set('bot', State::IDLE);
+
+        // Given: A command with a fake message
+        $message = new FakeMessage();
+        $command = new StartCommand($message);
+
+        // When: We execute the command
+        $command->handle();
+
+        // Then: No static reply should have been posted
+        $this->assertEmpty($message->staticReplyText);
+    }
 }
