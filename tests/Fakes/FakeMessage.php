@@ -24,6 +24,11 @@ class FakeMessage implements MessageHandler
     /**
      * @var string
      */
+    public $staticReplyText = '';
+
+    /**
+     * @var string
+     */
     private $content;
 
     public function __construct(string $content = '')
@@ -60,5 +65,18 @@ class FakeMessage implements MessageHandler
     public function getContent()
     {
         return $this->content;
+    }
+
+    public function staticReply(string $message, callable $callable = null)
+    {
+        $this->staticReplyText = $message;
+        if ($callable) {
+            $callable(new FakeMessage());
+        }
+    }
+
+    public function getId()
+    {
+        return '1234';
     }
 }

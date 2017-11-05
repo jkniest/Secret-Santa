@@ -25,6 +25,10 @@ class CreateStatesTable extends Migration
             'name'  => 'bot',
             'value' => State::STOPPED
         ]);
+        State::create([
+            'name'  => 'announcement_id',
+            'value' => null
+        ]);
     }
 
     /**
