@@ -31,6 +31,14 @@ class EndParticipation
      */
     public function handle(MessageService $service)
     {
+        $day = config('santa.end_participation.day');
+        $month = config('santa.end_participation.month');
+        $hour = config('santa.end_participation.hour');
+
+        if ($day == null || $month == null || $hour == null) {
+            return;
+        }
+
         State::set('bot', State::DRAWING);
 
         $service->delete(State::byName('announcement_id'), State::byName('announcement_channel'));
