@@ -71,4 +71,11 @@ interface MessageHandler
      * @return string
      */
     public function getId();
+
+    /**
+     * Get the id of the channel.
+     *
+     * @return string
+     */
+    public function getChannelId();
 }

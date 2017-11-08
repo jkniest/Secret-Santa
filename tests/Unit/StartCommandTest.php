@@ -4,7 +4,9 @@ namespace Tests\Unit;
 
 use App\Discord\Commands\StartCommand;
 use App\Models\State;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Config;
 use Tests\Fakes\FakeMessage;
 use Tests\TestCase;
 
@@ -19,6 +21,11 @@ class StartCommandTest extends TestCase
         $message = new FakeMessage();
         $command = new StartCommand($message);
 
+        // Given: The participation end is set to the the 4th december at 1pm
+        Config::set('santa.end_participation.day', 4);
+        Config::set('santa.end_participation.month', 12);
+        Config::set('santa.end_participation.hour', 13);
+
         // When: We execute the command
         $command->handle();
 
@@ -31,8 +38,13 @@ class StartCommandTest extends TestCase
         // Also: A static reply should have been send to the channel
         $this->assertNotEmpty($message->staticReplyText);
 
-        // And: The announcement post id should have been saved
+        // And: This static text should contain the date of the participation end
+        $year = Carbon::now()->year;
+        $this->assertContains(" 4. Dezember {$year} um 13 Uhr", $message->staticReplyText);
+
+        // And: The announcement post id and channel id should have been saved
         $this->assertEquals('1234', State::byName('announcement_id'));
+        $this->assertEquals('6789', State::byName('announcement_channel'));
     }
 
     /** @test */

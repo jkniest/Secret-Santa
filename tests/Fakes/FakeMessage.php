@@ -79,4 +79,9 @@ class FakeMessage implements MessageHandler
     {
         return '1234';
     }
+
+    public function getChannelId()
+    {
+        return '6789';
+    }
 }

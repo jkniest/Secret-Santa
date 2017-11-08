@@ -17,7 +17,13 @@ jobs:
           name: Install System Dependencies
           command: |
             apt-get update
-            apt-get install -y git unzip sudo zlib1g-dev libmcrypt-dev libpng-dev libsqlite3-dev
+            apt-get install -y git unzip sudo zlib1g-dev libmcrypt-dev libpng-dev libsqlite3-dev locales
+
+      - run:
+          name: Install german locale
+          command: |
+            echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen
+            locale-gen
 
       - run:
           name: Install PHP Extensions
