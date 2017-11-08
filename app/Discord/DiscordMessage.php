@@ -101,6 +101,16 @@ class DiscordMessage implements MessageHandler
     }
 
     /**
+     * Get the id of the channel.
+     *
+     * @return string
+     */
+    public function getChannelId()
+    {
+        return $this->original->channel_id;
+    }
+
+    /**
      * Post a static reply to the channel of the message. The difference between
      * 'reply' and 'staticReply' is, that staticReply does not mention the author
      * of the message.

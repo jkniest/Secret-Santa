@@ -60,4 +60,10 @@ class FakeMessageTest extends TestCase
     {
         $this->assertEquals('This is a sample content', $this->message->getContent());
     }
+
+    /** @test */
+    public function it_can_return_the_channel_id()
+    {
+        $this->assertEquals('6789', $this->message->getChannelId());
+    }
 }

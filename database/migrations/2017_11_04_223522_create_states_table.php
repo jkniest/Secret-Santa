@@ -29,6 +29,10 @@ class CreateStatesTable extends Migration
             'name'  => 'announcement_id',
             'value' => null
         ]);
+        State::create([
+            'name'  => 'announcement_channel',
+            'value' => null
+        ]);
     }
 
     /**

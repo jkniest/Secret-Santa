@@ -55,6 +55,7 @@ class StartCommand
         $content = Stub::load('start.message');
         $this->message->staticReply($content, function (MessageHandler $message) {
             State::set('announcement_id', $message->getId());
+            State::set('announcement_channel', $message->getChannelId());
         });
     }
 }

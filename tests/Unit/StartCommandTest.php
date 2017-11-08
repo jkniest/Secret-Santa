@@ -31,8 +31,9 @@ class StartCommandTest extends TestCase
         // Also: A static reply should have been send to the channel
         $this->assertNotEmpty($message->staticReplyText);
 
-        // And: The announcement post id should have been saved
+        // And: The announcement post id and channel id should have been saved
         $this->assertEquals('1234', State::byName('announcement_id'));
+        $this->assertEquals('6789', State::byName('announcement_channel'));
     }
 
     /** @test */
