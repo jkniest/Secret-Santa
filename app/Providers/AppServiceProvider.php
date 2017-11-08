@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Discord\DiscordMessageService;
 use App\Discord\MessageService;
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -24,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Carbon::setLocale('de_DE');
+        setlocale(LC_TIME, 'de_DE');
     }
 
     /**
