@@ -360,6 +360,6 @@ class EndParticipationTest extends TestCase
         $this->assertEmpty($service->channelId);
         $this->assertEmpty($service->message);
     }
-
-    // TODO: Config file and .env.example file
+    
+    // TODO: Replace dates in texts with the config value
 }
