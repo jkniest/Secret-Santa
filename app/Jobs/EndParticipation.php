@@ -6,6 +6,7 @@ use App\Discord\MessageHandler;
 use App\Discord\MessageService;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -36,6 +37,17 @@ class EndParticipation
         $hour = config('santa.end_participation.hour');
 
         if ($day == null || $month == null || $hour == null) {
+            return;
+        }
+
+        $now = Carbon::now();
+        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
+        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
+            return;
+        }
+
+        $state = State::byName('bot');
+        if ($state == State::DRAWING || $state == State::IDLE || $state == State::STOPPED) {
             return;
         }
 
