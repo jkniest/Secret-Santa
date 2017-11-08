@@ -53,20 +53,29 @@ class StartCommand
 
         $this->message->delete();
 
-        $hour = config('santa.end_participation.hour');
-        $day = config('santa.end_participation.day');
-        $month = config('santa.end_participation.month');
-        $year = Carbon::now()->year;
-        $dateString = Carbon::create($year, $month, $day, $hour)
-            ->formatLocalized('%e. %B %G um %k Uhr');
-
         $content = Stub::load('start.message', [
-            'date' => $dateString
+            'date' => $this->getDateString()
         ]);
 
         $this->message->staticReply($content, function (MessageHandler $message) {
             State::set('announcement_id', $message->getId());
             State::set('announcement_channel', $message->getChannelId());
         });
+    }
+
+    /**
+     * Format the configured end participition date to a human readable format.
+     *
+     * @return string
+     */
+    private function getDateString()
+    {
+        $hour = config('santa.end_participation.hour');
+        $day = config('santa.end_participation.day');
+        $month = config('santa.end_participation.month');
+        $year = Carbon::now()->year;
+
+        return Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G um %k Uhr');
     }
 }

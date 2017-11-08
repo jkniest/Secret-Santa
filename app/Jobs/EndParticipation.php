@@ -32,22 +32,11 @@ class EndParticipation
      */
     public function handle(MessageService $service)
     {
-        $day = config('santa.end_participation.day');
-        $month = config('santa.end_participation.month');
-        $hour = config('santa.end_participation.hour');
-
-        if ($day == null || $month == null || $hour == null) {
+        if (!$this->validateDate()) {
             return;
         }
 
-        $now = Carbon::now();
-        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
-        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
-            return;
-        }
-
-        $state = State::byName('bot');
-        if ($state == State::DRAWING || $state == State::IDLE || $state == State::STOPPED) {
+        if (State::byName('bot') != State::STARTED) {
             return;
         }
 
@@ -59,5 +48,30 @@ class EndParticipation
         $service->send($channel, Stub::load('draw.message'), function (MessageHandler $message) {
             State::set('announcement_id', $message->getId());
         });
+    }
+
+    /**
+     * Validate if the current date and time are correct. It reads the configuration
+     * values.
+     *
+     * @return bool
+     */
+    private function validateDate()
+    {
+        $hour = config('santa.end_participation.hour');
+        $day = config('santa.end_participation.day');
+        $month = config('santa.end_participation.month');
+
+        if ($day == null || $month == null || $hour == null) {
+            return false;
+        }
+
+        $now = Carbon::now();
+        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
+        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
+            return false;
+        }
+
+        return true;
     }
 }
