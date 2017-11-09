@@ -7,6 +7,7 @@ use App\Discord\MessageService;
 use App\Models\Participant;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -33,6 +34,20 @@ class Draw
      */
     public function handle(MessageService $service)
     {
+        $month = config('santa.draw.month');
+        $day = config('santa.draw.day');
+        $hour = config('santa.draw.hour');
+
+        if ($month == null || $day == null || $hour == null) {
+            return;
+        }
+
+        $now = Carbon::now();
+        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
+        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
+            return;
+        }
+
         $participants = Participant::all();
 
         // Select random partners
