@@ -26,6 +26,11 @@ class FakeMessageService implements MessageService
      */
     public $message = '';
 
+    /**
+     * @var array
+     */
+    public $dmMessages = [];
+
     public function delete(string $id, string $channelId)
     {
         $this->deletedPost = $id;
@@ -40,5 +45,10 @@ class FakeMessageService implements MessageService
         if ($callable) {
             $callable(new FakeMessage());
         }
+    }
+
+    public function sendDm(string $userId, string $message)
+    {
+        $this->dmMessages[] = $message;
     }
 }

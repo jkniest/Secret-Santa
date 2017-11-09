@@ -8,8 +8,8 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
-    protected function create(string $class, array $attributes = [])
+    protected function create(string $class, array $attributes = [], int $amount = null)
     {
-        return factory($class)->create($attributes);
+        return factory($class, $amount)->create($attributes);
     }
 }

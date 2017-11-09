@@ -35,4 +35,14 @@ interface MessageService
      * @return $this
      */
     public function send(string $channelId, string $message, callable $callable = null);
+
+    /**
+     * Send a Direct Message to a given user.
+     *
+     * @param string $userId  The id of the user.
+     * @param string $message The message which should be send.
+     *
+     * @return $this
+     */
+    public function sendDm(string $userId, string $message);
 }
