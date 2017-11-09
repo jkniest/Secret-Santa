@@ -48,6 +48,11 @@ class Draw
             return;
         }
 
+        $state = State::byName('bot');
+        if ($state == State::STARTED || $state == State::STOPPED || $state == State::IDLE) {
+            return;
+        }
+
         $participants = Participant::all();
 
         // Select random partners

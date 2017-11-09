@@ -294,8 +294,142 @@ class DrawTest extends TestCase
         $this->assertEmpty($service->message);
     }
 
-    // TODO: When State != DRAWING, don't do anything
-    // TODO: When 0 participants, don't do anything
+    /** @test */
+    public function if_the_state_is_started_dont_do_anything()
+    {
+        // Given: The date for drawing is the 10th of december, at 4pm
+        Config::set('santa.draw.month', 12);
+        Config::set('santa.draw.day', 10);
+        Config::set('santa.draw.hour', 16);
+
+        // Given: The current date is set to the 10th of december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 16));
+
+        // Given: The state is set to STARTED
+        State::set('bot', State::STARTED);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The draw job is called
+        dispatch(new Draw());
+
+        // Then: No participant should have a partner
+        $this->assertTrue(Participant::all()->every(function ($participant) {
+            return is_null($participant->partner_id);
+        }));
+
+        // Also: No direct messages should have been sent
+        $this->assertCount(0, $service->dmMessages);
+
+        // And: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: No new announcement post should have been written
+        $this->assertEmpty($service->message);
+    }
+
+    /** @test */
+    public function if_the_state_is_stopped_dont_do_anything()
+    {
+        // Given: The date for drawing is the 10th of december, at 4pm
+        Config::set('santa.draw.month', 12);
+        Config::set('santa.draw.day', 10);
+        Config::set('santa.draw.hour', 16);
+
+        // Given: The current date is set to the 10th of december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 16));
+
+        // Given: The state is set to STARTED
+        State::set('bot', State::STOPPED);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The draw job is called
+        dispatch(new Draw());
+
+        // Then: No participant should have a partner
+        $this->assertTrue(Participant::all()->every(function ($participant) {
+            return is_null($participant->partner_id);
+        }));
+
+        // Also: No direct messages should have been sent
+        $this->assertCount(0, $service->dmMessages);
+
+        // And: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: No new announcement post should have been written
+        $this->assertEmpty($service->message);
+    }
+
+    /** @test */
+    public function if_the_state_is_idle_dont_do_anything()
+    {
+        // Given: The date for drawing is the 10th of december, at 4pm
+        Config::set('santa.draw.month', 12);
+        Config::set('santa.draw.day', 10);
+        Config::set('santa.draw.hour', 16);
+
+        // Given: The current date is set to the 10th of december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 16));
+
+        // Given: The state is set to IDLE
+        State::set('bot', State::IDLE);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The draw job is called
+        dispatch(new Draw());
+
+        // Then: No participant should have a partner
+        $this->assertTrue(Participant::all()->every(function ($participant) {
+            return is_null($participant->partner_id);
+        }));
+
+        // Also: No direct messages should have been sent
+        $this->assertCount(0, $service->dmMessages);
+
+        // And: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: No new announcement post should have been written
+        $this->assertEmpty($service->message);
+    }
+
+    // TODO: When 0 or 1 participants, don't do anything
     // TODO: Add config values and .env file
     // TODO: Replace static dates with dynamic in existing texts
     // TODO: Fix jsonMessage DM sending (see DiscordMessageService)
