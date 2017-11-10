@@ -55,12 +55,18 @@ class Draw
 
         $participants = Participant::all();
 
+        if ($participants->count() === 0 || $participants->count() === 1) {
+            return;
+        }
+
         // Select random partners
         $allIds = $participants->map->discord_user_id->toArray();
         $newIds = $allIds;
 
-        while (count(array_intersect_assoc($allIds, $newIds))) {
+        $max = 1000;
+        while (count(array_intersect_assoc($allIds, $newIds)) && $max > 0) {
             shuffle($newIds);
+            $max--;
         }
 
         for ($i = 0; $i < $participants->count(); $i++) {
