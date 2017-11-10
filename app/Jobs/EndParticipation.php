@@ -45,7 +45,18 @@ class EndParticipation
         $service->delete(State::byName('announcement_id'), State::byName('announcement_channel'));
 
         $channel = State::byName('announcement_channel');
-        $service->send($channel, Stub::load('draw.message'), function (MessageHandler $message) {
+
+        $hour = config('santa.draw.hour');
+        $day = config('santa.draw.day');
+        $month = config('santa.draw.month');
+        $year = Carbon::now()->year;
+
+        $dateString = Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B um %k Uhr');
+
+        $service->send($channel, Stub::load('draw.message', [
+            'drawDate' => $dateString
+        ]), function (MessageHandler $message) {
             State::set('announcement_id', $message->getId());
         });
     }

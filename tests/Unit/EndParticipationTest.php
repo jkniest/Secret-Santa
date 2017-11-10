@@ -39,6 +39,11 @@ class EndParticipationTest extends TestCase
         State::set('announcement_id', 12345);
         State::set('announcement_channel', 67890);
 
+        // Given: The draw date is the 19th of december at 3pm
+        Config::set('santa.draw.day', 19);
+        Config::set('santa.draw.month', 12);
+        Config::set('santa.draw.hour', 15);
+
         // When: The end participation job is called
         dispatch(new EndParticipation());
 
@@ -51,7 +56,7 @@ class EndParticipationTest extends TestCase
 
         // Also: A new announcement post should have been written to the announcements channel
         $this->assertEquals(67890, $service->channelId);
-        $this->assertNotEmpty($service->message);
+        $this->assertContains(' 19. Dezember um 15 Uhr', $service->message);
 
         // And: The new announcement id should have been saved
         $this->assertEquals(1234, State::byName('announcement_id'));

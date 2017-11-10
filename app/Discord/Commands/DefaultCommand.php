@@ -6,6 +6,7 @@ use App\Discord\MessageHandler;
 use App\Models\Participant;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 
 /**
  * This command is the default '!santa' command. It will register a new participant or
@@ -81,8 +82,16 @@ class DefaultCommand
 
         $this->message->reply('du bist nun für das Wichtelspiel eingetragen.');
 
+        $hour = config('santa.draw.hour');
+        $day = config('santa.draw.day');
+        $month = config('santa.draw.month');
+        $year = Carbon::now()->year;
+        $drawDateString = Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G um %k Uhr');
+
         $this->message->sendDm(Stub::load('welcome.message', [
-            'username' => $this->message->getAuthor()->getUsername()
+            'username' => $this->message->getAuthor()->getUsername(),
+            'drawDate' => $drawDateString
         ]));
     }
 
