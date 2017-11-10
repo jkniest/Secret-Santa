@@ -510,8 +510,6 @@ class DrawTest extends TestCase
         // Also: No new announcement post should have been written
         $this->assertEmpty($service->message);
     }
-    
-    // TODO: Fix jsonMessage DM sending (see DiscordMessageService)
-    // TODO: Date in first DM should also be dynamic
+
     // TODO: Refactoring
 }
