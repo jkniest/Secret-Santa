@@ -46,16 +46,8 @@ class EndParticipation
 
         $channel = State::byName('announcement_channel');
 
-        $hour = config('santa.draw.hour');
-        $day = config('santa.draw.day');
-        $month = config('santa.draw.month');
-        $year = Carbon::now()->year;
-
-        $dateString = Carbon::create($year, $month, $day, $hour)
-            ->formatLocalized('%e. %B um %k Uhr');
-
         $service->send($channel, Stub::load('draw.message', [
-            'drawDate' => $dateString
+            'drawDate' => $this->getDateString()
         ]), function (MessageHandler $message) {
             State::set('announcement_id', $message->getId());
         });
@@ -84,5 +76,21 @@ class EndParticipation
         }
 
         return true;
+    }
+
+    /**
+     * Get a human-readable string of the drawing date.
+     *
+     * @return string
+     */
+    protected function getDateString()
+    {
+        $hour = config('santa.draw.hour');
+        $day = config('santa.draw.day');
+        $month = config('santa.draw.month');
+        $year = Carbon::now()->year;
+
+        return Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B um %k Uhr');
     }
 }
