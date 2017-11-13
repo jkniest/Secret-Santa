@@ -33,15 +33,7 @@ class HappyNewYear
      */
     public function handle(MessageService $service)
     {
-        $now = Carbon::now();
-
-        if ($now->day != 1 || $now->month != 1 || $now->hour != 0 || $now->minute != 0) {
-            return;
-        }
-
-        $state = State::byName('bot');
-
-        if ($state == State::STARTED || $state == State::STOPPED || $state == State::IDLE) {
+        if (!$this->validate()) {
             return;
         }
 
@@ -54,5 +46,25 @@ class HappyNewYear
         State::set('bot', State::IDLE);
 
         Participant::all()->each->delete();
+    }
+
+    /**
+     * Validating if the current date is the new year and the state is set to drawing.
+     *
+     * @return bool
+     */
+    private function validate()
+    {
+        $now = Carbon::now();
+
+        if ($now->day != 1 || $now->month != 1 || $now->hour != 0 || $now->minute != 0) {
+            return false;
+        }
+
+        if (State::byName('bot') != State::DRAWING) {
+            return false;
+        }
+
+        return true;
     }
 }

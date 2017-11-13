@@ -279,6 +279,4 @@ class HappyNewYearTest extends TestCase
         // Also: The participant list should not be empty
         $this->assertCount(3, Participant::all());
     }
-
-    // TODO: Refactoring
 }
