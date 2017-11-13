@@ -6,6 +6,7 @@ use App\Discord\MessageService;
 use App\Models\Participant;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -32,6 +33,12 @@ class HappyNewYear
      */
     public function handle(MessageService $service)
     {
+        $now = Carbon::now();
+
+        if ($now->day != 1 || $now->month != 1 || $now->hour != 0 || $now->minute != 0) {
+            return;
+        }
+
         $channelId = State::byName('announcement_channel');
 
         $service->delete(State::byName('announcement_id'), $channelId);

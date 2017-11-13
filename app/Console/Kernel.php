@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Jobs\Draw;
 use App\Jobs\EndParticipation;
 use App\Jobs\GivePresents;
+use App\Jobs\HappyNewYear;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -40,6 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->job(EndParticipation::class)->everyMinute();
         $schedule->job(Draw::class)->everyMinute();
         $schedule->job(GivePresents::class)->everyMinute();
+        $schedule->job(HappyNewYear::class)->everyMinute();
     }
 
     /**
