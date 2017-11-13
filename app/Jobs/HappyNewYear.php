@@ -39,6 +39,12 @@ class HappyNewYear
             return;
         }
 
+        $state = State::byName('bot');
+
+        if ($state == State::STARTED || $state == State::STOPPED || $state == State::IDLE) {
+            return;
+        }
+
         $channelId = State::byName('announcement_channel');
 
         $service->delete(State::byName('announcement_id'), $channelId);

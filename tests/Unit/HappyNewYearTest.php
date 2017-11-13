@@ -172,6 +172,113 @@ class HappyNewYearTest extends TestCase
         $this->assertCount(3, Participant::all());
     }
 
-    // TODO: Validate state
+    /** @test */
+    public function it_will_not_execute_if_the_state_is_started()
+    {
+        // Given: The current state is STARTED
+        State::set('bot', State::STARTED);
+
+        // Given: The current date is the first january of the next year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year + 1, 1, 1, 0));
+
+        // Given: The old announcement id is '12345' and the old announcement channel is '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // Given: A faked message service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: There are 3 participants
+        $this->create(Participant::class, [], 3);
+
+        // When: The HappyNewYear command is executed
+        dispatch(new HappyNewYear());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been sent
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: The participant list should not be empty
+        $this->assertCount(3, Participant::all());
+    }
+
+    /** @test */
+    public function it_will_not_execute_if_the_state_is_stopped()
+    {
+        // Given: The current state is STOPPED
+        State::set('bot', State::STOPPED);
+
+        // Given: The current date is the first january of the next year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year + 1, 1, 1, 0));
+
+        // Given: The old announcement id is '12345' and the old announcement channel is '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // Given: A faked message service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: There are 3 participants
+        $this->create(Participant::class, [], 3);
+
+        // When: The HappyNewYear command is executed
+        dispatch(new HappyNewYear());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been sent
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: The participant list should not be empty
+        $this->assertCount(3, Participant::all());
+    }
+
+    /** @test */
+    public function it_will_not_execute_if_the_state_is_idle()
+    {
+        // Given: The current state is IDLE
+        State::set('bot', State::IDLE);
+
+        // Given: The current date is the first january of the next year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year + 1, 1, 1, 0));
+
+        // Given: The old announcement id is '12345' and the old announcement channel is '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // Given: A faked message service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: There are 3 participants
+        $this->create(Participant::class, [], 3);
+
+        // When: The HappyNewYear command is executed
+        dispatch(new HappyNewYear());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been sent
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: The participant list should not be empty
+        $this->assertCount(3, Participant::all());
+    }
+
     // TODO: Refactoring
 }
