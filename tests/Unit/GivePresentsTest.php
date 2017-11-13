@@ -260,8 +260,129 @@ class GivePresentsTest extends TestCase
         $this->assertCount(0, $service->dmMessages);
     }
 
+    /** @test */
+    public function if_the_state_is_started_dont_do_anything()
+    {
+        // Given: The give date is set to the 10th of december, at 3pm
+        Config::set('santa.give.month', 12);
+        Config::set('santa.give.day', 10);
+        Config::set('santa.give.hour', 15);
 
-    // TODO: Validate state
+        // Given: The current date is set to the 10th of december, at 3pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 15));
+
+        // Given: The state is set to STARTED
+        State::set('bot', State::STARTED);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The job is called
+        dispatch(new GivePresents());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been posted
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: No participant should have get a dm with a generic info
+        $this->assertCount(0, $service->dmMessages);
+    }
+
+    /** @test */
+    public function if_the_state_is_stopped_dont_do_anything()
+    {
+        // Given: The give date is set to the 10th of december, at 3pm
+        Config::set('santa.give.month', 12);
+        Config::set('santa.give.day', 10);
+        Config::set('santa.give.hour', 15);
+
+        // Given: The current date is set to the 10th of december, at 3pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 15));
+
+        // Given: The state is set to STOPPED
+        State::set('bot', State::STOPPED);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The job is called
+        dispatch(new GivePresents());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been posted
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: No participant should have get a dm with a generic info
+        $this->assertCount(0, $service->dmMessages);
+    }
+
+    /** @test */
+    public function if_the_state_is_idle_dont_do_anything()
+    {
+        // Given: The give date is set to the 10th of december, at 3pm
+        Config::set('santa.give.month', 12);
+        Config::set('santa.give.day', 10);
+        Config::set('santa.give.hour', 15);
+
+        // Given: The current date is set to the 10th of december, at 3pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 10, 15));
+
+        // Given: The state is set to IDLE
+        State::set('bot', State::IDLE);
+
+        // Given: The message service is faked
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement post id is 12345 and the channel id is 67890
+        State::set('announcement_id', 12345);
+        State::set('announcement_channel', 67890);
+
+        // Given: There are 10 participants
+        $this->create(Participant::class, [], 10);
+
+        // When: The job is called
+        dispatch(new GivePresents());
+
+        // Then: The old announcement post should not have been deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // And: No new announcement post should have been posted
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // Also: No participant should have get a dm with a generic info
+        $this->assertCount(0, $service->dmMessages);
+    }
+
     // TODO: Add dates to config file and .env.example
     // TODO: Changed static dates in older texts
     // TODO: Refactoring

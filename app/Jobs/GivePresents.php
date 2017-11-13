@@ -47,6 +47,11 @@ class GivePresents
             return;
         }
 
+        $state = State::byName('bot');
+        if ($state == State::STARTED || $state == State::STOPPED || $state == State::IDLE) {
+            return;
+        }
+
         $channelId = State::byName('announcement_channel');
 
         $service->delete(
