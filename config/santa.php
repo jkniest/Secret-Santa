@@ -27,9 +27,25 @@ return [
     |
     */
     'draw'              => [
-        'day'   => env('END_PARTICIPATION_DAY', 24),
-        'month' => env('END_PARTICIPATION_MONTH', 12),
-        'hour'  => env('END_PARTICIPATION_HOUR', 15)
+        'day'   => env('DRAW_DAY', 24),
+        'month' => env('DRAW_MONTH', 12),
+        'hour'  => env('DRAW_HOUR', 15)
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Give date
+    |--------------------------------------------------------------------------
+    |
+    | On this date every participant will get a direct message with the info
+    | that they should now give their presents to their partners. Also a new
+    | announcement post will be send.
+    |
+    */
+    'give'              => [
+        'day'   => env('GIVE_DAY', 31),
+        'month' => env('GIVE_MONTH', 12),
+        'hour'  => env('GIVE_HOUR', 15)
     ]
 
 ];
