@@ -34,6 +34,11 @@ class DefaultCommandTest extends TestCase
         Config::set('santa.draw.day', 5);
         Config::set('santa.draw.month', 12);
 
+        // Given: The give date is at the 12th of december at 8pm
+        Config::set('santa.give.hour', 20);
+        Config::set('santa.give.day', 12);
+        Config::set('santa.give.month', 12);
+
         // When: This command is executed
         $command->handle();
 
@@ -53,6 +58,7 @@ class DefaultCommandTest extends TestCase
         // And: The user should have get a DM from the bot
         $year = Carbon::now()->year;
         $this->assertContains(" 5. Dezember {$year} um 15 Uhr", $message->dmText);
+        $this->assertContains(" 12. Dezember {$year} um 20 Uhr", $message->dmText);
     }
 
     /** @test */

@@ -84,7 +84,8 @@ class DefaultCommand
 
         $this->message->sendDm(Stub::load('welcome.message', [
             'username' => $this->message->getAuthor()->getUsername(),
-            'drawDate' => $this->getDrawDateString()
+            'drawDate' => $this->getDrawDateString(),
+            'giveDate' => $this->getGiveDateString()
         ]));
     }
 
@@ -116,6 +117,24 @@ class DefaultCommand
         $hour = config('santa.draw.hour');
         $day = config('santa.draw.day');
         $month = config('santa.draw.month');
+        $year = Carbon::now()->year;
+
+        return Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G um %k Uhr');
+    }
+
+    /**
+     * Generate a human-readable string of the date when the presents should be given.
+     *
+     * Format: 1. Decemer 2017 um 14 Uhr
+     *
+     * @return string
+     */
+    protected function getGiveDateString()
+    {
+        $hour = config('santa.give.hour');
+        $day = config('santa.give.day');
+        $month = config('santa.give.month');
         $year = Carbon::now()->year;
 
         return Carbon::create($year, $month, $day, $hour)

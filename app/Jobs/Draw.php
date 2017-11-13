@@ -151,7 +151,10 @@ class Draw
         $participants->each(function ($participant) use ($service) {
             $service->sendDm($participant->discord_user_id, Stub::load(
                 'partner.message',
-                ['id' => $participant->partner_id]
+                [
+                    'id'   => $participant->partner_id,
+                    'date' => $this->getDateString()
+                ]
             ));
         });
     }
@@ -167,12 +170,29 @@ class Draw
     {
         $service->delete(State::byName('announcement_id'), State::byName('announcement_channel'));
 
-        $service->send(
-            State::byName('announcement_channel'),
-            Stub::load('draw-done.message'),
-            function (MessageHandler $message) {
-                State::set('announcement_id', $message->getId());
-            }
-        );
+        $channelId = State::byName('announcement_channel');
+        $message = Stub::load('draw-done.message', ['date' => $this->getDateString()]);
+
+        $service->send($channelId, $message, function (MessageHandler $message) {
+            State::set('announcement_id', $message->getId());
+        });
+    }
+
+    /**
+     * Generate a human-readable string for the give-date.
+     *
+     * Format: 1. December 2017
+     *
+     * @return string
+     */
+    private function getDateString()
+    {
+        $hour = config('santa.give.hour');
+        $day = config('santa.give.day');
+        $month = config('santa.give.month');
+        $year = Carbon::now()->year;
+
+        return Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G');
     }
 }
