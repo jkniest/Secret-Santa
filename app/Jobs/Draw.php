@@ -148,10 +148,21 @@ class Draw
      */
     private function sendDirectMessages(MessageService $service, Collection $participants)
     {
-        $participants->each(function ($participant) use ($service) {
+        $hour = config('santa.give.hour');
+        $day = config('santa.give.day');
+        $month = config('santa.give.month');
+        $year = Carbon::now()->year;
+
+        $dateString = Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G');
+
+        $participants->each(function ($participant) use ($service, $dateString) {
             $service->sendDm($participant->discord_user_id, Stub::load(
                 'partner.message',
-                ['id' => $participant->partner_id]
+                [
+                    'id'   => $participant->partner_id,
+                    'date' => $dateString
+                ]
             ));
         });
     }
@@ -167,9 +178,19 @@ class Draw
     {
         $service->delete(State::byName('announcement_id'), State::byName('announcement_channel'));
 
+        $hour = config('santa.give.hour');
+        $day = config('santa.give.day');
+        $month = config('santa.give.month');
+        $year = Carbon::now()->year;
+
+        $dateString = Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G');
+
         $service->send(
             State::byName('announcement_channel'),
-            Stub::load('draw-done.message'),
+            Stub::load('draw-done.message', [
+                'date' => $dateString
+            ]),
             function (MessageHandler $message) {
                 State::set('announcement_id', $message->getId());
             }

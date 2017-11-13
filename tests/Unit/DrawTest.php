@@ -43,6 +43,11 @@ class DrawTest extends TestCase
         // Given: There are 10 participants
         $this->create(Participant::class, [], 10);
 
+        // Given: The give date is set to the 20th december at 3pm
+        Config::set('santa.give.month', 12);
+        Config::set('santa.give.day', 20);
+        Config::set('santa.give.hour', 15);
+
         // When: The draw job is called
         dispatch(new Draw());
 
@@ -56,13 +61,14 @@ class DrawTest extends TestCase
             $this->assertNotEquals($participant->discord_user_id, $participant->partner_id);
         });
 
-        // Also: Every participant should have get an e-mail with detailed information
+        // Also: Every participant should have get an direct message with detailed information
         $this->assertCount(10, $service->dmMessages);
 
         $participants = Participant::all()->toArray();
         for ($i = 0; $i < count($participants); $i++) {
             $participant = Participant::all()[$i];
             $this->assertContains("<@{$participant['partner_id']}>", $service->dmMessages[$i]);
+            $this->assertContains(" 20. Dezember 2017", $service->dmMessages[$i]);
         }
 
         // And: The old announcement post should have been deleted
@@ -71,7 +77,9 @@ class DrawTest extends TestCase
 
         // Also: A new announcement post should have been written to the announcements channel
         $this->assertEquals(67890, $service->channelId);
-        $this->assertNotEmpty($service->message);
+
+        $year = Carbon::now()->year;
+        $this->assertContains(" 20. Dezember {$year}", $service->message);
 
         // And: The new announcement id should have been saved
         $this->assertEquals(1234, State::byName('announcement_id'));

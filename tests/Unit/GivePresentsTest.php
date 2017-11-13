@@ -383,6 +383,5 @@ class GivePresentsTest extends TestCase
         $this->assertCount(0, $service->dmMessages);
     }
 
-    // TODO: Changed static dates in older texts
     // TODO: Refactoring
 }

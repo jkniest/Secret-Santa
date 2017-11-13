@@ -82,9 +82,18 @@ class DefaultCommand
 
         $this->message->reply('du bist nun für das Wichtelspiel eingetragen.');
 
+        $hour = config('santa.give.hour');
+        $day = config('santa.give.day');
+        $month = config('santa.give.month');
+        $year = Carbon::now()->year;
+
+        $drawString = Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G um %k Uhr');
+
         $this->message->sendDm(Stub::load('welcome.message', [
             'username' => $this->message->getAuthor()->getUsername(),
-            'drawDate' => $this->getDrawDateString()
+            'drawDate' => $this->getDrawDateString(),
+            'giveDate' => $drawString
         ]));
     }
 
