@@ -6,6 +6,7 @@ use App\Discord\MessageService;
 use App\Models\Participant;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -32,6 +33,20 @@ class GivePresents
      */
     public function handle(MessageService $service)
     {
+        $month = config('santa.give.month');
+        $day = config('santa.give.day');
+        $hour = config('santa.give.hour');
+
+        if ($month == null || $day == null || $hour == null) {
+            return;
+        }
+
+        $now = Carbon::now();
+        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
+        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
+            return;
+        }
+
         $channelId = State::byName('announcement_channel');
 
         $service->delete(
