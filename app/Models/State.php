@@ -46,12 +46,12 @@ class State extends Model
     /**
      * Set the value of a given state.
      *
-     * @param string $name  The name of the state
-     * @param string $value The new value
+     * @param string      $name  The name of the state
+     * @param string|null $value The new value
      *
      * @return void
      */
-    public static function set(string $name, string $value)
+    public static function set(string $name, $value)
     {
         static::whereName($name)->first()->update([
             'value' => $value
