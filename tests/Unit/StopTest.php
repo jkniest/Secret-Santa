@@ -143,6 +143,92 @@ class StopTest extends TestCase
         $this->assertNotNull(State::byName('announcement_id'));
     }
 
-    // TODO: Validate state
+    /** @testf */
+    public function it_will_dont_do_anything_if_the_state_is_started()
+    {
+        // Given: The date is two days after new-year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 1, 3, 0));
+
+        // Given: The state is set to STARTED
+        State::set('bot', State::STARTED);
+
+        // Given: A fakes messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement id and channel id are '12345' and '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // When: The stop command is running
+        dispatch(new Stop());
+
+        // And: The old announcement message should not be deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: The announcement id should not be null
+        $this->assertNotNull(State::byName('announcement_id'));
+    }
+
+    /** @testf */
+    public function it_will_dont_do_anything_if_the_state_is_drawing()
+    {
+        // Given: The date is two days after new-year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 1, 3, 0));
+
+        // Given: The state is set to DRAWING
+        State::set('bot', State::DRAWING);
+
+        // Given: A fakes messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement id and channel id are '12345' and '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // When: The stop command is running
+        dispatch(new Stop());
+
+        // And: The old announcement message should not be deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: The announcement id should not be null
+        $this->assertNotNull(State::byName('announcement_id'));
+    }
+
+    /** @testf */
+    public function it_will_dont_do_anything_if_the_state_is_stopped()
+    {
+        // Given: The date is two days after new-year
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 1, 3, 0));
+
+        // Given: The state is set to STOPPED
+        State::set('bot', State::STOPPED);
+
+        // Given: A fakes messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // Given: The announcement id and channel id are '12345' and '67890'
+        State::set('announcement_id', '12345');
+        State::set('announcement_channel', '67890');
+
+        // When: The stop command is running
+        dispatch(new Stop());
+
+        // And: The old announcement message should not be deleted
+        $this->assertEmpty($service->deletedPost);
+
+        // Also: The announcement id should not be null
+        $this->assertNotNull(State::byName('announcement_id'));
+    }
+
     // TODO: Refactoring
 }

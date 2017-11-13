@@ -36,6 +36,11 @@ class Stop
             return;
         }
 
+        $state = State::byName('bot');
+        if ($state == State::STARTED || $state == State::DRAWING || $state == State::STOPPED) {
+            return;
+        }
+
         $service->delete(
             State::byName('announcement_id'),
             State::byName('announcement_channel')
