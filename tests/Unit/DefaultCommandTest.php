@@ -5,6 +5,8 @@ namespace Tests\Unit;
 use App\Discord\Commands\DefaultCommand;
 use App\Models\Participant;
 use App\Models\State;
+use Carbon\Carbon;
+use Config;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Fakes\FakeMessage;
 use Tests\TestCase;
@@ -27,6 +29,11 @@ class DefaultCommandTest extends TestCase
         $message = new FakeMessage();
         $command = new DefaultCommand($message);
 
+        // Given: The draw date is at the 5th of december at 3pm
+        Config::set('santa.draw.hour', 15);
+        Config::set('santa.draw.day', 5);
+        Config::set('santa.draw.month', 12);
+
         // When: This command is executed
         $command->handle();
 
@@ -44,21 +51,8 @@ class DefaultCommandTest extends TestCase
         $this->assertEquals('du bist nun für das Wichtelspiel eingetragen.', $message->replyText);
 
         // And: The user should have get a DM from the bot
-        $this->assertEquals(implode("\n", [
-            'Hey random123,',
-            'wir freuen uns dich in unserem Wichtelspiel begrüßen zu dürfen. Die Auslosung wird ' .
-            'komplett automatisch und zufällig durchgeführt. Folgende Daten sind für dich noch ' .
-            'relevant:',
-            '',
-            '- Am 24. Dezember 2017 findet die Auslosung statt und du bekommst per DM die Info, ' .
-            'wen du beschenken sollst.',
-            '',
-            '- Am 31. Dezember 2017 werden die Spiele dann verschenkt. Wir erinnern dich nochmal ' .
-            'rechtzeitig dran.',
-            '',
-            'Alles gute,',
-            'Secret Santa'
-        ]), $message->dmText);
+        $year = Carbon::now()->year;
+        $this->assertContains(" 5. Dezember {$year} um 15 Uhr", $message->dmText);
     }
 
     /** @test */

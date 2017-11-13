@@ -54,6 +54,25 @@ class DiscordMessageService implements MessageService
     }
 
     /**
+     * Send a Direct Message to a given user.
+     *
+     * @param string $userId  The id of the user.
+     * @param string $message The message which should be send.
+     *
+     * @return $this
+     */
+    public function sendDm(string $userId, string $message)
+    {
+        $dmChannelId = $this->makeRequest('post', 'users/@me/channels', [
+            'recipient_id' => $userId
+        ])['id'];
+
+        $this->send($dmChannelId, $message);
+
+        return $this;
+    }
+
+    /**
      * Make a request to the discord servers.
      *
      * @param string $method      The http method which should be used in lower-case.

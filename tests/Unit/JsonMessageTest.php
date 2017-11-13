@@ -70,8 +70,7 @@ class JsonMessageTest extends TestCase
         $this->message->sendDm('I love you!');
 
         // Then: The message should have been sent
-        $this->assertEquals('I love you!', $this->service->message);
-        $this->assertEquals('5678', $this->service->channelId);
+        $this->assertContains('I love you!', $this->service->dmMessages);
     }
 
     /** @test */

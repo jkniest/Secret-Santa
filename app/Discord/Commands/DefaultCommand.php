@@ -6,6 +6,7 @@ use App\Discord\MessageHandler;
 use App\Models\Participant;
 use App\Models\State;
 use App\Stub;
+use Carbon\Carbon;
 
 /**
  * This command is the default '!santa' command. It will register a new participant or
@@ -82,7 +83,8 @@ class DefaultCommand
         $this->message->reply('du bist nun für das Wichtelspiel eingetragen.');
 
         $this->message->sendDm(Stub::load('welcome.message', [
-            'username' => $this->message->getAuthor()->getUsername()
+            'username' => $this->message->getAuthor()->getUsername(),
+            'drawDate' => $this->getDrawDateString()
         ]));
     }
 
@@ -100,5 +102,23 @@ class DefaultCommand
     {
         Participant::where('discord_user_id', $id)->delete();
         $this->message->reply('du bist nun für das Wichtelspiel ausgetragen. Schade :(');
+    }
+
+    /**
+     * Generate a human-readable string of the date when the drawing is done.
+     *
+     * Format: 1. December 2017 um 14 Uhr
+     *
+     * @return string
+     */
+    private function getDrawDateString()
+    {
+        $hour = config('santa.draw.hour');
+        $day = config('santa.draw.day');
+        $month = config('santa.draw.month');
+        $year = Carbon::now()->year;
+
+        return Carbon::create($year, $month, $day, $hour)
+            ->formatLocalized('%e. %B %G um %k Uhr');
     }
 }

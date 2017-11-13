@@ -16,6 +16,7 @@ class CreateParticipantsTable extends Migration
         Schema::create('participants', function (Blueprint $table) {
             $table->increments('id');
             $table->string('discord_user_id');
+            $table->string('partner_id')->nullable();
             $table->timestamps();
         });
     }

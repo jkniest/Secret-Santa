@@ -88,7 +88,7 @@ class JsonMessage implements MessageHandler
      */
     public function sendDm(string $message)
     {
-        app(MessageService::class)->send(
+        app(MessageService::class)->sendDm(
             $this->original['author']['id'],
             $message
         );
