@@ -33,25 +33,57 @@ class GivePresents
      */
     public function handle(MessageService $service)
     {
+        if (!$this->validate()) {
+            return;
+        }
+
+        $this->sendAnnouncementMessage($service);
+        $this->sendDirectMessages($service);
+    }
+
+    /**
+     * Validate if the date and state are correct.
+     *
+     * @return bool
+     */
+    private function validate()
+    {
+        return $this->validateDate() && State::byName('bot') == State::DRAWING;
+    }
+
+    /**
+     * Validate that the date and time are correct.
+     *
+     * @return bool
+     */
+    private function validateDate()
+    {
         $month = config('santa.give.month');
         $day = config('santa.give.day');
         $hour = config('santa.give.hour');
 
         if ($month == null || $day == null || $hour == null) {
-            return;
+            return false;
         }
 
         $now = Carbon::now();
         $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
         if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
-            return;
+            return false;
         }
 
-        $state = State::byName('bot');
-        if ($state == State::STARTED || $state == State::STOPPED || $state == State::IDLE) {
-            return;
-        }
+        return true;
+    }
 
+    /**
+     * Delete the old announcement post and create a new one.
+     *
+     * @param MessageService $service The messaging service
+     *
+     * @return void
+     */
+    private function sendAnnouncementMessage(MessageService $service)
+    {
         $channelId = State::byName('announcement_channel');
 
         $service->delete(
@@ -60,7 +92,18 @@ class GivePresents
         );
 
         $service->send($channelId, Stub::load('presents.message'));
+    }
 
+    /**
+     * Send a small direct message to all participants with the information that the
+     * giving starts today.
+     *
+     * @param MessageService $service The messaging service
+     *
+     * @return void
+     */
+    private function sendDirectMessages(MessageService $service)
+    {
         Participant::all()->each(function ($participant) use ($service) {
             $service->sendDm(
                 $participant->discord_user_id,
