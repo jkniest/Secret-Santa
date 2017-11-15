@@ -229,6 +229,4 @@ class StopTest extends TestCase
         // Also: The announcement id should not be null
         $this->assertNotNull(State::byName('announcement_id'));
     }
-
-    // TODO: Refactoring
 }

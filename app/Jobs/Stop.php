@@ -31,13 +31,7 @@ class Stop
      */
     public function handle(MessageService $service)
     {
-        $now = Carbon::now();
-        if ($now->day != 3 || $now->month != 1 || $now->hour != 0 || $now->minute != 0) {
-            return;
-        }
-
-        $state = State::byName('bot');
-        if ($state == State::STARTED || $state == State::DRAWING || $state == State::STOPPED) {
+        if (!$this->validate()) {
             return;
         }
 
@@ -48,5 +42,27 @@ class Stop
 
         State::set('announcement_id', null);
         State::set('bot', State::STOPPED);
+    }
+
+    /**
+     * Validate that the given date and state are correct.
+     *
+     * @return bool
+     */
+    private function validate()
+    {
+        return $this->validateDate() && State::byName('bot') == State::IDLE;
+    }
+
+    /**
+     * Validate that this is the third day of january at 12:00am.
+     *
+     * @return bool
+     */
+    private function validateDate()
+    {
+        $now = Carbon::now();
+
+        return !($now->day != 3 || $now->month != 1 || $now->hour != 0 || $now->minute != 0);
     }
 }
