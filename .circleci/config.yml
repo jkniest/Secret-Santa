@@ -4,6 +4,10 @@ jobs:
   build:
     working_directory: /var/www
 
+    dependencies:
+      cache_directories:
+        - ~/.composer/cache
+
     environment:
       BASH_ENV: ~/.bashrc
 
