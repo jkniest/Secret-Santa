@@ -2,8 +2,20 @@
 
 namespace App\Providers;
 
+use App\Discord\DiscordMessageService;
+use App\Discord\MessageService;
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * The main service provider.
+ *
+ * @category Core
+ * @package  SecretSanta
+ * @author   Jordan Kniest <contact@jkniest.de>
+ * @license  MIT <opensource.org/licenses/MIT>
+ * @link     https://jkniest.de
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Carbon::setLocale('de_DE');
+        setlocale(LC_TIME, 'de_DE.UTF-8');
     }
 
     /**
@@ -23,6 +36,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(MessageService::class, DiscordMessageService::class);
     }
 }
