@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Discord\Commands\CommandHandler;
 use App\Discord\Commands\DefaultCommand;
 use App\Discord\Commands\ListCommand;
+use App\Discord\Commands\MarkCommand;
 use App\Discord\DiscordMessage;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -50,7 +51,8 @@ class RunCommand extends Command
 
         $this->commandHandler = new CommandHandler('!santa', [
             ''     => DefaultCommand::class,
-            'list' => ListCommand::class
+            'list' => ListCommand::class,
+            'mark' => MarkCommand::class
         ]);
     }
 

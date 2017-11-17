@@ -354,7 +354,4 @@ class StartTest extends TestCase
         // And: No announcement post id should have been saved
         $this->assertNull(State::byName('announcement_id'));
     }
-
-    // TODO: Refactoring
-    // TODO: Implement "santa mark" command
 }
