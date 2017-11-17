@@ -355,7 +355,6 @@ class StartTest extends TestCase
         $this->assertNull(State::byName('announcement_id'));
     }
 
-    // TODO: Remove "santa start" command
     // TODO: Refactoring
     // TODO: Implement "santa mark" command
 }

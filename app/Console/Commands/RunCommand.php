@@ -51,8 +51,7 @@ class RunCommand extends Command
 
         $this->commandHandler = new CommandHandler('!santa', [
             ''      => DefaultCommand::class,
-            'list'  => ListCommand::class,
-            'start' => StartCommand::class
+            'list'  => ListCommand::class
         ]);
     }
 
