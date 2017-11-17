@@ -51,6 +51,11 @@ class Start
             return;
         }
 
+        $channelId = State::byName('announcement_channel');
+        if ($channelId == null) {
+            return;
+        }
+
         State::set('bot', State::STARTED);
 
         $hour = config('santa.end_participation.hour');
@@ -61,7 +66,6 @@ class Start
         $dateString = Carbon::create($year, $month, $day, $hour)
             ->formatLocalized('%e. %B %G um %k Uhr');
 
-        $channelId = State::byName('announcement_channel');
         $service->send($channelId, Stub::load('start.message', [
             'date' => $dateString
         ]), function (MessageHandler $message) {
