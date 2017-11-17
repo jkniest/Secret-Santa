@@ -55,7 +55,173 @@ class StartTest extends TestCase
         $this->assertEquals('1234', State::byName('announcement_id'));
     }
 
-    // TODO: Validate date
+    /** @test */
+    public function it_does_nothing_if_the_date_is_not_configured()
+    {
+        // Given: The configured start date is null
+        Config::set('santa.start.hour', null);
+        Config::set('santa.start.day', null);
+        Config::set('santa.start.month', null);
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // Then: The bot state should not have changed to "STARTED"
+        $this->assertEquals(State::STOPPED, State::byName('bot'));
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_current_hour_is_wrong()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd december at 5pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 3, 17));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // Then: The bot state should not have changed to "STARTED"
+        $this->assertEquals(State::STOPPED, State::byName('bot'));
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_current_day_is_wrong()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 4th december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 4, 16));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // Then: The bot state should not have changed to "STARTED"
+        $this->assertEquals(State::STOPPED, State::byName('bot'));
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_current_month_is_wrong()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd november at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 11, 3, 16));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // Then: The bot state should not have changed to "STARTED"
+        $this->assertEquals(State::STOPPED, State::byName('bot'));
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_current_minute_is_not_zero()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd december at 4:15pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 3, 16, 15));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // Then: The bot state should not have changed to "STARTED"
+        $this->assertEquals(State::STOPPED, State::byName('bot'));
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
     // TODO: Validate state (== stopped)
     // TODO: Validate announcement_channel state (not null)
     // TODO: Remove "santa start" command

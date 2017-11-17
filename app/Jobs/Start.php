@@ -32,6 +32,20 @@ class Start
      */
     public function handle(MessageService $service)
     {
+        $hour = config('santa.start.hour');
+        $day = config('santa.start.day');
+        $month = config('santa.start.month');
+
+        if ($hour == null || $day == null || $month == null) {
+            return;
+        }
+
+        $now = Carbon::now();
+        $isSameDay = $now->isSameDay(Carbon::createFromDate($now->year, $month, $day));
+        if (!$isSameDay || $now->hour != $hour || $now->minute !== 0) {
+            return;
+        }
+
         State::set('bot', State::STARTED);
 
         $hour = config('santa.end_participation.hour');
