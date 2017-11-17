@@ -14,4 +14,6 @@ class ResetChannelCommand extends TestCase
     }
 
     // TODO: Best-case test
+    // TODO: Validate state == STOPPED
+    // TODO: Refactoring
 }

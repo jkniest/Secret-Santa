@@ -46,6 +46,11 @@ class Start
             return;
         }
 
+        $state = State::byName('bot');
+        if ($state == State::STARTED || $state == State::DRAWING || $state == State::IDLE) {
+            return;
+        }
+
         State::set('bot', State::STARTED);
 
         $hour = config('santa.end_participation.hour');

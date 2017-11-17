@@ -222,8 +222,111 @@ class StartTest extends TestCase
         $this->assertNull(State::byName('announcement_id'));
     }
 
-    // TODO: Validate state (== stopped)
+    /** @test */
+    public function it_does_nothing_if_the_state_is_started()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 3, 16));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: The state is set to started
+        State::set('bot', State::STARTED);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_state_is_drawing()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 3, 16));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: The state is set to drawing
+        State::set('bot', State::DRAWING);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+    /** @test */
+    public function it_does_nothing_if_the_state_is_idle()
+    {
+        // Given: The configured start date is the 3rd december at 4pm
+        Config::set('santa.start.hour', 16);
+        Config::set('santa.start.day', 3);
+        Config::set('santa.start.month', 12);
+
+        // Given: The current date and time is the 3rd december at 4pm
+        Carbon::setTestNow(Carbon::create(Carbon::now()->year, 12, 3, 16));
+
+        // Given: The announcement channel is set to '12345'
+        State::set('announcement_channel', 12345);
+
+        // Given: The state is set to idle
+        State::set('bot', State::IDLE);
+
+        // Given: A faked messaging service
+        $service = new FakeMessageService();
+        app()->singleton(MessageService::class, function () use ($service) {
+            return $service;
+        });
+
+        // When: We execute the command
+        dispatch(new Start());
+
+        // And: Nomessage should have been send to the announcement channel
+        $this->assertEmpty($service->channelId);
+        $this->assertEmpty($service->message);
+
+        // And: No announcement post id should have been saved
+        $this->assertNull(State::byName('announcement_id'));
+    }
+
+
     // TODO: Validate announcement_channel state (not null)
     // TODO: Remove "santa start" command
+    // TODO: Refactoring
     // TODO: Implement "santa mark" command
 }

@@ -14,5 +14,6 @@ class MarkCommandTest extends TestCase
 
     // TODO: Best-case test
     // TODO: Validate announcement_channel state
+    // TODO: Refactoring
     // TODO: Implement reset:channel command
 }
