@@ -45,6 +45,10 @@ class MarkCommand
      */
     public function handle()
     {
+        if (State::byName('announcement_channel') != null) {
+            return;
+        }
+
         State::set('announcement_channel', $this->message->getChannelId());
 
         $this->message->delete();

@@ -32,7 +32,26 @@ class MarkCommandTest extends TestCase
         $this->assertTrue($message->isDeleted);
     }
 
-    // TODO: Validate announcement_channel state
+    /** @test */
+    public function it_does_nothing_if_there_is_already_an_announcement_channel()
+    {
+        // Given: The announcement channel is set to '1234'
+        State::set('announcement_channel', '1234');
+
+        // Given: The state is set to stopped
+        State::set('bot', State::STOPPED);
+
+        // When: The command is executed with a fake message
+        $message = new FakeMessage;
+        (new MarkCommand($message))->handle();
+
+        // Then: The channel id of the message should not have been changed
+        $this->assertEquals('1234', State::byName('announcement_channel'));
+
+        // And: The command message should not have been deleted
+        $this->assertFalse($message->isDeleted);
+    }
+
     // TODO: Refactoring
     // TODO: Implement reset:channel command
 }
