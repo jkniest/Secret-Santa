@@ -51,7 +51,4 @@ class MarkCommandTest extends TestCase
         // And: The command message should not have been deleted
         $this->assertFalse($message->isDeleted);
     }
-
-    // TODO: Refactoring
-    // TODO: Implement reset:channel command
 }
