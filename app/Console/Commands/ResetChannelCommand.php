@@ -45,5 +45,6 @@ class ResetChannelCommand extends Command
         }
 
         State::set('announcement_channel', null);
+        State::set('announcement_id', null);
     }
 }
