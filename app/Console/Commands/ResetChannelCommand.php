@@ -40,6 +40,10 @@ class ResetChannelCommand extends Command
      */
     public function handle()
     {
+        if (State::byName('bot') != State::STOPPED) {
+            return;
+        }
+
         State::set('announcement_channel', null);
     }
 }
