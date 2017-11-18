@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Discord\Commands\CommandHandler;
 use App\Discord\Commands\DefaultCommand;
 use App\Discord\Commands\ListCommand;
-use App\Discord\Commands\StartCommand;
+use App\Discord\Commands\MarkCommand;
 use App\Discord\DiscordMessage;
 use Discord\Discord;
 use Discord\Parts\Channel\Message;
@@ -50,9 +50,9 @@ class RunCommand extends Command
         parent::__construct();
 
         $this->commandHandler = new CommandHandler('!santa', [
-            ''      => DefaultCommand::class,
-            'list'  => ListCommand::class,
-            'start' => StartCommand::class
+            ''     => DefaultCommand::class,
+            'list' => ListCommand::class,
+            'mark' => MarkCommand::class
         ]);
     }
 
